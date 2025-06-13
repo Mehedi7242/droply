@@ -1,8 +1,6 @@
 import 'dotenv/config';
 import {pgTable,text,uuid,integer,boolean,timestamp} from "drizzle-orm/pg-core"
 import { relations } from "drizzle-orm"
-import { files } from './schema';
-
 
 export const files = pgTable("files",{
     id:uuid("id").defaultRandom().primaryKey(),
@@ -39,12 +37,14 @@ export const filesRelations = relations(files, ({one,many}) =>(
             //parent  eeach folder can have many child files/folder
             parent:one(files, {
                 fields: [files.parentId],
-                references: [files.id]
+                references: [files.id],
             }),
 
 
             //relationship to child file/folder
             children: many(files)
-        }
-    ) 
-)
+        }))
+    
+// type defination
+export const File = typeof files.$inferSelect
+export const NewFile = typeof files.$inferInsert
